@@ -73,6 +73,8 @@ KeyboardInputManager.prototype.listen = function () {
   this.bindButtonPress(".restart-button", this.restart);
   this.bindButtonPress(".keep-playing-button", this.keepPlaying);
 
+  this.allowAddingTiles();
+
   // Respond to swipe events
   var touchStartClientX, touchStartClientY;
   var gameContainer = document.getElementsByClassName("game-container")[0];
@@ -141,4 +143,18 @@ KeyboardInputManager.prototype.bindButtonPress = function (selector, fn) {
   var button = document.querySelector(selector);
   button.addEventListener("click", fn.bind(this));
   button.addEventListener(this.eventTouchend, fn.bind(this));
+};
+
+KeyboardInputManager.prototype.placeTile = function (event) {
+  event.preventDefault();
+  this.emit("placeTile", event.target);
+}
+
+KeyboardInputManager.prototype.allowAddingTiles = function () {
+  var tiles = document.querySelectorAll(".grid-cell");
+  for (var i = 0; i < tiles.length; ++i) {
+    var tile = tiles[i];
+    tile.addEventListener("click", this.placeTile.bind(this));
+    tile.addEventListener(this.eventTouchend, this.placeTile.bind(this));
+  }
 };
